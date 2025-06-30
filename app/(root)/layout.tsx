@@ -1,12 +1,14 @@
-import React from 'react'
 
-const layout = ({children}: {children:React.ReactNode}) => {
+import Navbar from "../components/Navbar";
+import { SessionProvider } from "next-auth/react";
+
+export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div>
-      <h1 className="text-3xl">NAVBAR</h1>
-      {children}
-    </div>
-  )
+    <SessionProvider>
+      <main className="font-work-sans">
+        <Navbar />
+        {children}
+      </main>
+    </SessionProvider>
+  );
 }
-
-export default layout
