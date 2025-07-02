@@ -1,13 +1,14 @@
 "use client";
 
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import React from "react";
 
 const Navbar = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  if (status === "loading") return null;
 
   return (
     <header className="px-5 py-5 bg-white shadow-sm font-work-sans">
@@ -37,7 +38,7 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => signIn("github")}
-              className="px-3 py-1 rounded hover:bg-gray-200 hover:text-blue-600-transition-colors duration-200"
+              className="px-3 py-1 rounded hover:bg-gray-200 hover:text-blue-600 transition-colors duration-200"
             >
               <span>Login</span>
             </button>
