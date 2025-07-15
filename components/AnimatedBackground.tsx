@@ -32,15 +32,33 @@ export default function AnimatedBackground() {
       const path = pathRefs.current[index];
       if (!path) return;
 
+      // Set initial wave shape
       gsap.set(path, { attr: { d: from } });
 
-      gsap.to(path, {
-        attr: { d: to },
-        duration,
-        repeat: -1,
-        yoyo: true,
-        ease: 'power1.inOut',
+      // Prepare stroke dash for draw animation
+      const pathLength = path.getTotalLength();
+      path.style.strokeDasharray = pathLength.toString();
+      path.style.strokeDashoffset = pathLength.toString();
+
+      const tl = gsap.timeline({ repeat: -1, yoyo: true });
+
+      // Draw line from left to right on load
+      tl.to(path.style, {
+        strokeDashoffset: 0,
+        duration: 1.5,
+        ease: 'power1.out',
       });
+
+      // Then morph between wave shapes continuously
+      tl.to(
+        path,
+        {
+          attr: { d: to },
+          duration,
+          ease: 'power1.inOut',
+        },
+        '>-0.5' // overlap start a bit for smoothness
+      );
     });
   }, []);
 
@@ -63,12 +81,13 @@ export default function AnimatedBackground() {
       <style jsx>{`
         .background {
           position: fixed;
-          top: 60;
+          top: 0;
           left: 0;
           height: 100vh;
           width: 100vw;
           background-color: white;
           z-index: -1;
+          padding-top: 100px;
         }
 
         svg {
